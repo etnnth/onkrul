@@ -1,0 +1,13 @@
+# Created by https://www.toptal.com/developers/gitignore/api/elm
+# Edit at https://www.toptal.com/developers/gitignore?templates=elm
+
+### Elm ###
+# elm-package generated files
+elm-stuff
+.elm
+# elm-repl generated files
+repl-temp-*
+build/*.js
+
+# End of https://www.toptal.com/developers/gitignore/api/elm
+
