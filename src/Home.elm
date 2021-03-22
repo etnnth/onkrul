@@ -66,7 +66,9 @@ append3 l1 l2 l3 = List.append l1 ( List.append l2 l3 )
 viewExample : Example -> Html msg
 viewExample e = p [style "margin" "1em", style "color" "#AAA"] (append3 [
     viewLink e.title e.link
+  , text ": "
   , text e.description
+  , br [] []
   ] (List.map viewKeyword e.keywords) [viewLink "code" e.code])
 
 viewKeyword : String -> Html msg
@@ -76,9 +78,16 @@ viewKeyword kw = i [style "margin-left" "1em"] [text kw]
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = 
   case msg of
-    Change newContent ->
-      ( { model | search = newContent, examples = List.reverse model.examples}, Cmd.none )
+    Change search ->
+      ( { model | search = search, examples = sortBySearch search}, Cmd.none )
 
+
+sortBySearch : String -> List ( Example )
+sortBySearch search = List.sortBy (score search) examples
+
+
+score : String -> Example -> Int
+score search example = 1
 
 
 -- SUBSCRIPTIONS
@@ -165,5 +174,5 @@ viewLink name path =
   a [ 
       href path
     , style "color" "#EEE"
-    , style "margin" "1em"
+    , style "margin" "1em 0.3em 1em 1em"
     ] [ text name ] 
