@@ -5,7 +5,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
-
+import Example.Example exposing (Example, sortBySearch, examples)
 
 
 -- MAIN
@@ -23,13 +23,6 @@ main =
 
 -- MODEL
 
-type alias Example
-  = {   title : String
-      , link : String
-      , description : String
-      , keywords : List ( String )
-      , code : String
-  }
 
 type alias Model
   = { examples : List ( Example )
@@ -40,20 +33,6 @@ type alias Model
 init : () -> ( Model, Cmd Msg )
 init flags  =
   ( Model examples "", Cmd.none )
-
-
-examples = [
-    {title = "title", 
-            link = "link", 
-            description = "description blabla", 
-            keywords = ["kw1", "kw2"],
-            code = "code1"}
-  , {title = "title", 
-            link = "link", 
-            description = "description blabla", 
-            keywords = ["kw1", "kw3"],
-            code = "code2"}
-  ]
 
 -- UPDATE
 
@@ -81,13 +60,6 @@ update msg model =
     Change search ->
       ( { model | search = search, examples = sortBySearch search}, Cmd.none )
 
-
-sortBySearch : String -> List ( Example )
-sortBySearch search = List.sortBy (score search) examples
-
-
-score : String -> Example -> Int
-score search example = 1
 
 
 -- SUBSCRIPTIONS
