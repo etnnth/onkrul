@@ -13,7 +13,7 @@ build:
 compile: build/home.html
 
 reactor: 
-	${RUN_IN_DOCKER} -it elm elm reactor
+	${RUN_IN_DOCKER} -d -it elm elm reactor
 
 sh: 
 	${RUN_IN_DOCKER} -it --entrypoint sh elm
