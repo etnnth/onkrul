@@ -18,6 +18,9 @@ reactor:
 sh: 
 	${RUN_IN_DOCKER} -it --entrypoint sh elm
 
+repl: 
+	${RUN_IN_DOCKER} -it elm elm repl
+
 build/%.html: src/%.elm
 	${ELM_MAKE} $< --output $@
 
