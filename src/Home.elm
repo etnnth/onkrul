@@ -5,7 +5,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
-import Example.Example exposing (Example, sortBySearch, examples)
+import Index.Index exposing (Example, sortBySearch, examples)
 
 
 -- MAIN

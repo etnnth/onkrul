@@ -1,4 +1,4 @@
-module Example.Example exposing (Example, sortBySearch, examples, distance, nextRow)
+module Index.Index exposing (Example, sortBySearch, examples, distance, nextRow)
 
 import Time
 import List
