@@ -16,15 +16,28 @@ type alias Example
 
 
 sortBySearch : String -> List ( Example )
-sortBySearch search = List.sortBy (score search) examples
+sortBySearch search = 
+  if (String.length search) == 0 then
+    List.sortBy (\e -> Time.posixToMillis e.date) examples
+  else
+    List.sortBy (score search) examples
 
 
 score : String -> Example -> Int
-score search example = 1
+score search example = 
+  let 
+    distanceToTitle = min 0 ((distance search example.title) - 5) 
+    distanceToKeyword keyword =
+      case List.minimum (List.map (distance keyword) (String.words search)) of
+        Nothing -> 0
+        Just d -> min 0 (d-5)
+    distanceToKeywords = List.map distanceToKeyword example.keywords
+  in
+  (List.sum distanceToKeywords) + distanceToTitle
 
 examples : List (Example)
 examples = [
-    {title = "title", 
+    {title = "titititiitiiit", 
             link = "link", 
             description = "description blabla", 
             keywords = ["kw1", "kw2"],
@@ -35,13 +48,13 @@ examples = [
             description = "description blabla", 
             keywords = ["kw1", "kw3"],
             code = "code2",
-            date = Time.millisToPosix 0}
-  , {title = "title", 
+            date = Time.millisToPosix 10}
+  , {title = "kitle", 
             link = "link", 
             description = "description blabla", 
             keywords = ["kw2", "kw3"],
             code = "code2",
-            date = Time.millisToPosix 0}
+            date = Time.millisToPosix 100}
   ]
 
 {-
