@@ -5,7 +5,8 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
-import Index.Index exposing (Example, sortBySearch, examples)
+import Index.Sort exposing (sortBySearch)
+import Index.Metadata exposing (Metadata)
 
 
 -- MAIN
@@ -25,14 +26,14 @@ main =
 
 
 type alias Model
-  = { examples : List ( Example )
+  = { index : List ( Metadata )
   , search : String
   }
 
 
 init : () -> ( Model, Cmd Msg )
 init flags  =
-  ( Model examples "", Cmd.none )
+  ( Model (sortBySearch "") "", Cmd.none )
 
 -- UPDATE
 
@@ -40,15 +41,14 @@ init flags  =
 type Msg
   = Change String
 
-append3 l1 l2 l3 = List.append l1 ( List.append l2 l3 )
 
-viewExample : Example -> Html msg
-viewExample e = p [style "margin" "1em", style "color" "#AAA"] (append3 [
-    viewLink e.title e.link
+viewIndex : Metadata -> Html msg
+viewIndex e = p [style "margin" "1em", style "color" "#AAA"] (List.concat [
+  [viewLink e.title e.link
   , text ": "
   , text e.description
   , br [] []
-  ] (List.map viewKeyword e.keywords) [viewLink "code" e.code])
+  ], (List.map viewKeyword e.keywords), [viewLink "code" e.code]])
 
 viewKeyword : String -> Html msg
 viewKeyword kw = i [style "margin-left" "1em"] [text kw]
@@ -58,7 +58,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = 
   case msg of
     Change search ->
-      ( { model | search = search, examples = sortBySearch search}, Cmd.none )
+      ( { model | search = search, index = sortBySearch search}, Cmd.none )
 
 
 
@@ -113,14 +113,14 @@ view model =
     div mainStyle [ 
       navLinks
     , searchBar model
-    , nav examplesStyle (List.map viewExample model.examples)
+    , nav indexStyle (List.map viewIndex model.index)
     , footer footerStyle [text "My footer"]
       ]
     ]
   }
 
-examplesStyle : List (Attribute msg)
-examplesStyle = [ 
+indexStyle : List (Attribute msg)
+indexStyle = [ 
         style "background-color" "#222"
       , style "margin" "0"
       , style "padding" "1em 0"
