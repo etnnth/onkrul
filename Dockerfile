@@ -3,7 +3,7 @@ RUN wget -O - 'https://github.com/elm/compiler/releases/download/0.19.1/binary-f
     | gunzip -c >/usr/local/bin/elm
 RUN chmod +x /usr/local/bin/elm
 RUN apk add --no-cache npm=12.18.4-r0
-RUN npm install --unsafe-perm -g elm-test@0.19.1-revision4 elm-format http-server uglify-js
+RUN npm install --unsafe-perm -g elm-test@0.19.1-revision4 elm-format http-server esbuild
 ENV HOME /elm
 WORKDIR /elm
 VOLUME /elm
