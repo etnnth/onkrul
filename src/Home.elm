@@ -1,12 +1,13 @@
-module Home exposing (main, link, navLinks, footerView, mainDiv)
+module Home exposing (main)
 
 
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
-import Index.Sort exposing (sortBySearch)
 import Index.Metadata exposing (Metadata)
+import Index.Index
+import Components.Components exposing (link, navLinks, footerView)
 
 
 -- MAIN
@@ -32,7 +33,7 @@ type alias Model
 
 init : () -> ( Model, Cmd Msg )
 init flags  =
-  ( Model (sortBySearch "") "", Cmd.none )
+  ( Model (Index.Index.sortIndex "") "", Cmd.none )
 
 
 -- UPDATE
@@ -45,7 +46,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = 
   case msg of
     Change search ->
-      ( { model | search = search, index = sortBySearch search}, Cmd.none )
+      ( { model | search = search, index = Index.Index.sortIndex search}, Cmd.none )
 
 
 -- SUBSCRIPTIONS
@@ -97,10 +98,22 @@ view model =
         text "Search : "
         , input (List.append searchBarStyle [value model.search, onInput Change]) []
         ]
+
+    homeDiv : List (Html msg) -> Html msg
+    homeDiv = div [
+              style "display" "flex"
+            , style "background-color" "#333"
+            , style "flex-direction" "column"
+            , style "margin" "0"
+            , style "padding" "0em 0"
+            , style "width" "100%"
+            , style "height" "100%"
+            , style "position" "absolute"
+        ]
   in
   { title = "Onkrul Home" 
   , body = [
-    mainDiv [ 
+    homeDiv [ 
       navLinks [link "About" "/about", link "Github" "https://github.com/"]
     , searchBar 
     , nav indexStyle (List.map indexView model.index)
@@ -109,42 +122,4 @@ view model =
     ]
   }
 
-mainDiv : List (Html msg) -> Html msg
-mainDiv = div [
-          style "display" "flex"
-        , style "flex-direction" "column"
-        , style "margin" "0"
-        , style "padding" "0em 0"
-        , style "width" "100%"
-        , style "height" "100%"
-        , style "position" "absolute"
-    ]
 
-footerView : Html msg
-footerView =
-  let
-    footerStyle : List (Attribute msg)
-    footerStyle = [
-            style "background-color" "#333"
-          , style "margin" "0"
-          , style "padding" "1em 1em"
-          , style "color" "#EEE"
-          ]
-  in
-  footer footerStyle [text "footer"]
-
-navLinks : List(Html msg) -> Html msg
-navLinks links =
-  nav [ 
-        style "background-color" "#333"
-      , style "margin" "0"
-      , style "padding" "1em 0"
-  ] links
-
-link : String -> String -> Html msg
-link name path =
-  a [ 
-      href path
-    , style "color" "#EEE"
-    , style "margin" "1em 0.3em 1em 1em"
-    ] [ text name ] 

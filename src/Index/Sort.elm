@@ -3,17 +3,16 @@ module Index.Sort exposing (sortBySearch)
 import Time
 import List
 import Index.Metadata exposing (Metadata)
-import Index.Index
 
 
 
 
-sortBySearch : String -> List ( Metadata )
-sortBySearch search = 
+sortBySearch : List ( Metadata ) -> String -> List ( Metadata )
+sortBySearch index search = 
   if (String.length search) == 0 then
-    List.sortBy (\e -> Time.posixToMillis e.date) Index.Index.index
+    List.sortBy (\e -> Time.posixToMillis e.date) index
   else
-    List.sortBy (score search) Index.Index.index
+    List.sortBy (score search) index
 
 
 score : String -> Metadata -> Int
