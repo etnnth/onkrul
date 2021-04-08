@@ -1,5 +1,4 @@
-module Home exposing (main)
-
+module About exposing ( main )
 
 import Browser
 import Html exposing (..)
@@ -63,44 +62,20 @@ subscriptions _ =
 view : Model -> Browser.Document Msg
 view model =
   let
-    keywordView : String -> Html msg
-    keywordView kw = i [style "margin-left" "1em"] [text kw]
-
-    indexView : Metadata -> Html msg
-    indexView e = p [style "margin" "1em", style "color" "#AAA"] (List.concat [
-      [link e.title e.link
-      , text ": "
-      , text e.description
-      , br [] []
-      ], (List.map keywordView e.keywords), [link "code" e.code]]) 
-
-    indexStyle : List (Attribute msg)
-    indexStyle = [ 
+    aboutStyle : List (Attribute msg)
+    aboutStyle = [ 
             style "background-color" "#222"
           , style "margin" "0"
-          , style "padding" "1em 0"
+          , style "padding" "1em"
           , style "flex-grow" "1"
           , style "display" "flex"
           , style "flex-wrap" "wrap"
           , style "align-content" "flex-start"
+          , style "color" "#EEE"
       ]
 
-    searchBarStyle : List (Attribute msg)
-    searchBarStyle = [
-            style "background-color" "#333"
-          , style "margin" "0"
-          , style "padding" "0.3em 1em"
-          , style "color" "#eea"
-          ]
-
-    searchBar : Html Msg
-    searchBar = div searchBarStyle [
-        text "Search : "
-        , input (List.append searchBarStyle [value model.search, onInput Change]) []
-        ]
-
-    homeDiv : List (Html msg) -> Html msg
-    homeDiv = div [
+    mainDiv : List (Html msg) -> Html msg
+    mainDiv = div [
               style "display" "flex"
             , style "background-color" "#333"
             , style "flex-direction" "column"
@@ -111,12 +86,11 @@ view model =
             , style "position" "absolute"
         ]
   in
-  { title = "Onkrul Home" 
+  { title = "Onkrul About" 
   , body = [
-    homeDiv [ 
-      navLinks [link "About" "About", link "Github" "https://github.com/"]
-    , searchBar 
-    , nav indexStyle (List.map indexView model.index)
+    mainDiv [ 
+      navLinks [link "Home" "Home", link "Github" "https://github.com/"]
+    , p aboutStyle [text "about"]
     , footerView
       ]
     ]
