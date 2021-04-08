@@ -114,7 +114,7 @@ view model =
   { title = "Onkrul Home" 
   , body = [
     homeDiv [ 
-      navLinks [link "About" "About", link "Github" "https://github.com/"]
+      navLinks [link "About" "About", link "Github" "https://github.com/etnnth/onkrul"]
     , searchBar 
     , nav indexStyle (List.map indexView model.index)
     , footerView
