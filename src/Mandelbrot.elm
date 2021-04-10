@@ -48,6 +48,7 @@ type alias Model =
   { time : Float
   , width : Int
   , height : Int
+  , fps : Float
   }
 
 
@@ -55,7 +56,9 @@ init : () -> (Model, Cmd Msg)
 init () =
   ( { time = 0
     , width = 0
-    , height = 0}, Cmd.batch
+    , height = 0
+    , fps = 0
+  }, Cmd.batch
         [Task.perform GetViewport getViewport
         ] 
         )
@@ -74,7 +77,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     TimeDelta dt ->
-      ( {model | time = model.time + dt}, Cmd.none )
+      ( {model | time = model.time + dt, fps = model.fps * 0.9 +  100 / dt}, Cmd.none )
     Resize width height -> ( {model | width = width, height = height}, Cmd.none ) 
     GetViewport { viewport } ->
             ( { model | width = round viewport.width, height = round viewport.height }
@@ -105,6 +108,8 @@ view model =
       WebGL.toHtml
         [ width model.width
         , height model.height
+        , style "height" "100%"
+        , style "width" "100%"
         , style "position" "absolute"
         , style "left" "0"
         , style "top" "0"
@@ -114,7 +119,8 @@ view model =
     Components.Components.mainDiv [
       Components.Components.navLinks (List.append (Components.Components.infosView metadata) []),
       Html.div [style "flex-grow" "1"] [],
-      Components.Components.footerView
+      Components.Components.footerView,
+      Components.Components.fpsViewer model.fps
       ]
     ]
   }

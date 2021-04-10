@@ -1,9 +1,27 @@
-module Components.Components exposing (mainDiv, footerView, navLinks, infosView, link)
+module Components.Components exposing (mainDiv, footerView, navLinks, infosView, link, fpsViewer)
 
 
 import Html.Attributes exposing (..)
 import Html exposing (..)
 import Index.Metadata
+import String
+
+
+
+fpsViewer : Float -> Html msg
+fpsViewer fps =
+  let
+      value = "fps:" ++ String.fromInt (round fps)
+  in
+  div [ 
+    style "position" "absolute"
+  , style "right" "0"  
+  , style "top" "0"
+  , style "background-color" "#333"
+  , style "padding" "0.5em"
+  , style "font-size" "1em"
+  , style "color" "red"
+  ] [text value]
 
 
 mainDiv : List (Html msg) -> Html msg
