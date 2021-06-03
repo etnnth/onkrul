@@ -180,11 +180,11 @@ fragmentShader =
     uniform vec2 size;
     varying vec2 fragCoord;
     const float SURF_DIST = .01;
-    const float MAX_DIST = 100.;
-    const int MAX_STEPS = 1000;
+    const float MAX_DIST = 20.;
+    const int MAX_STEPS = 100;
 
     float GetDist(vec3 p) {
-      vec4 s = vec4(3.0 * sin(time * 2e-4), 1.1, 7.0 + 2.0 * cos(time * 3e-4), 1.0);
+      vec4 s = vec4(3.0 * sin(time * 7e-4), 1.1, 7.0 + 2.0 * cos(time * 3e-4), 1.0);
       float sphereDist = length(p-s.xyz)-s.w;
       vec2 tilling = .1 * pow(.5 - .49 * sin(p.xz * 20.), vec2(300.));
       float planeDist = p.y + max(tilling.x, tilling.y);
@@ -224,9 +224,15 @@ fragmentShader =
         return dif;
     }
 
+    vec3 getSky(vec2 uv) {
+      float atmosphere = sqrt(1.0-uv.y);
+      vec3 skyColor = vec3(0.2,0.4,0.8);
+      return mix(skyColor,vec3(.6, .2, .5),atmosphere / 1.3);
+    }
+
     vec3 render(vec2 coord) {
       vec2 uv = coord / dim;
-      vec3 col = vec3(0);
+      vec3 col = getSky(uv);
       vec3 ro = vec3(0, 1, 0);
       vec3 rd = normalize(vec3(uv.x, uv.y, 1));
       float d = RayMarch(ro, rd);
