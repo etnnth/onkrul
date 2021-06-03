@@ -1,5 +1,6 @@
 module Index.Index exposing (sortIndex)
 import Mandelbrot
+import Sphere
 
 import Time
 import Index.Metadata exposing (Metadata)
@@ -10,6 +11,7 @@ sortIndex = Index.Sort.sortBySearch index
 
 index : List (Metadata)
 index = [
-    Mandelbrot.metadata
+    Mandelbrot.metadata,
+    Sphere.metadata
   ]
 
