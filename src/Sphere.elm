@@ -105,7 +105,7 @@ view : Model -> Browser.Document Msg
 view model =
   { title = "Sphere"
   , body = [
-      WebGL.toHtml
+      WebGL.toHtmlWith [WebGL.clearColor 0 0 0 0, WebGL.antialias]
         [ width model.width
         , height model.height
         , style "height" "100%"
