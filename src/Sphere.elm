@@ -179,9 +179,9 @@ fragmentShader =
     uniform float dim;
     uniform vec2 size;
     varying vec2 fragCoord;
-    const float SURF_DIST = .01;
+    const float SURF_DIST = .001;
     const float MAX_DIST = 20.;
-    const int MAX_STEPS = 100;
+    const int MAX_STEPS = 1000;
 
     float GetDist(vec3 p) {
       vec4 s = vec4(3.0 * sin(time * 7e-4), 1.1, 7.0 + 2.0 * cos(time * 3e-4), 1.0);
