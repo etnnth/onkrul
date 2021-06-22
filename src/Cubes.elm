@@ -179,26 +179,38 @@ fragmentShader =
     uniform float dim;
     uniform vec2 size;
     varying vec2 fragCoord;
-    const float SURF_DIST = .001;
-    const float MAX_DIST = 200.;
-    const int MAX_STEPS = 1000;
+    const float SURF_DIST = .01;
+    const float MAX_DIST = 50.;
+    const int MAX_STEPS = 100;
 
-    float box( vec3 p, vec3 b) {
+
+    vec3 rotation (vec3 p, vec3 axis, float angle) {
       vec4 r = vec4(0., 0., 0., 0.);
-      float angle = .3;
-      vec3 axis = vec3(1., 0., 0.);
       float half_angle = angle/2.;
       r.xyz = axis.xyz * sin(half_angle);
       r.w = cos(half_angle);
       vec3 temp = cross(r.xyz, p) + r.w * p;
-      vec3 v = p + 2.0*cross(r.xyz, temp);
-      vec3 q = abs(v) - b;
-      return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+      return p + 2.0*cross(r.xyz, temp);
+      }
+
+    float box( vec3 p, vec3 b) {
+      vec3 q = abs(p) - b;
+      return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) -.01;
     }
 
+    float boxes1 (vec3 p) {
+      vec3 c = vec3(2.); // repetition periode
+      vec3 id = floor(p/c+.5);
+      vec3 q = p-c*clamp(id,vec3(-2.,0., 1.), vec3(2.,2.,3.));
+      vec3 noise = (sin(vec3(1.)+id)*200.);
+      float angle = time * 0.000005 * length(floor(noise));
+      vec3 axis = normalize(noise);
+      vec3 v = rotation(q, axis, angle);
+      return box(v,vec3(0.3));
+      }
+
     float GetDist(vec3 p) {
-      float b1 = box(p-vec3(0.5,.5,1.),vec3(0.2,0.1,0.1));
-      return b1;
+      return min (boxes1 (p), min(p.y + 2., 10. - length(p)));
     }
 
     float RayMarch(vec3 ro, vec3 rd) {
@@ -206,7 +218,7 @@ fragmentShader =
       for(int i=0; i<MAX_STEPS; i++) {
         vec3 p = ro + rd*dO;
         float dS = GetDist(p);
-        dO += dS;
+        dO += dS*.8;
         if(dO>MAX_DIST || dS<SURF_DIST ) break;
       }
       return dO;
@@ -223,25 +235,19 @@ fragmentShader =
     }
 
     float GetLight(vec3 p) {
-        vec3 lightPos = vec3(0, 5, 6);
+        vec3 lightPos = vec3(3, 6, -2);
         vec3 l = normalize(lightPos-p);
         vec3 n = GetNormal(p);
-        float dif = clamp(dot(n, l), 0.5, 1.);
+        float dif = clamp(dot(n, l), 0., 1.) * .9 + .1;
         float d = RayMarch(p+n*SURF_DIST*2., l);
-        if(d<length(lightPos-p)) dif *= .1;
+        if(d<length(lightPos-p)) dif = .1;
         return dif;
-    }
-
-    vec3 getSky(vec2 uv) {
-      float atmosphere = sqrt(1.0-uv.y);
-      vec3 skyColor = vec3(0.2,0.4,0.8);
-      return mix(skyColor,vec3(.6, .2, .5),atmosphere / 1.3);
     }
 
     vec3 render(vec2 coord) {
       vec2 uv = coord / dim;
-      vec3 col = getSky(uv);
-      vec3 ro = vec3(0, 1, 0);
+      vec3 col = vec3(.1, .2, .6);
+      vec3 ro = vec3(0., 2.5, -4);
       vec3 rd = normalize(vec3(uv.x, uv.y, 1));
       float d = RayMarch(ro, rd);
       if (d < MAX_DIST) {
