@@ -2,6 +2,7 @@ module Index.Index exposing (sortIndex)
 import Mandelbrot
 import Sphere
 import Cubes
+import ColoredCube
 
 import Time
 import Index.Metadata exposing (Metadata)
@@ -14,6 +15,7 @@ index : List (Metadata)
 index = [
     Mandelbrot.metadata,
     Sphere.metadata,
-    Cubes.metadata
+    Cubes.metadata,
+    ColoredCube.metadata
   ]
 
