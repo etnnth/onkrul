@@ -32,10 +32,10 @@ main =
 
 metadata : Index.Metadata.Metadata
 metadata = {
-  title = "Colored Cube",
-  link = "ColoredCube",
+  title = "Cube with soft shadow",
+  link = "CubeSoftShadow",
   keywords = ["ray marching", "webgl"],
-  description = "Colored cube drawing in webgl with ray marching",
+  description = "Colored cube with soft shadow drawing in webgl with ray marching",
   code = "https://github.com/etnnth/onkrul/blob/main/src/ColoredCube.elm",
   date = Time.millisToPosix 0
   }
@@ -252,6 +252,24 @@ fragmentShader =
         Surface s = RayMarch(p+n*SURF_DIST*2., l);
         if(s.sd<length(lightPos-p)) dif = .3;
         return dif;
+    }
+
+    float softshadow( vec3 ro, float k ) {
+      vec3 rd = GetNormal(ro);
+      float res = 1.0;
+      float ph = 1e20;
+      float t = 1.;
+      for(int j = 0; j<64; j++){
+        float h = GetDist(ro + rd*t).sd;
+        if( h<0.001 )
+            return 0.0;
+        float y = h*h/(2.0*ph);
+        float d = sqrt(h*h-y*y);
+        res = min( res, k*d/max(0.0,t-y) );
+        ph = h;
+        t += h;
+      }
+      return res;
     }
 
     vec3 render(vec2 coord) {
